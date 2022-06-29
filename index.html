@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    .floatleft-class{
+        float: left;
+    }
+    .bigfonts{
+      font-size: 10vw;
+    }
+    .colorDiv{
+      background-color: green;
+      text-align: center;
+      padding-top: 9vh;
+      padding-bottom: 9vh;
+    }
+    .inputName{
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      text-align: center;
+      font-weight:bold;
+    }
+    .button {
+      background-color: #237ed9; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+  <script>
+
+    window.onbeforeunload = function() {
+        return "are you sure you want to leave?";
+    }
+
+    const colorTimerLimt = [];
+
+    var gid = 0;
+    var yellowLimit = 0;
+    var redLimit = 0;
+
+    function createTimer(){
+
+      var ymm = 0;
+      var yss = 0;
+      var rmm = 0;
+      var rss = 0;
+      //alert(isNaN(document.getElementById("ymm").value));
+
+      if (!isNaN(parseInt(document.getElementById("ymm").value))){
+        ymm = parseInt(document.getElementById("ymm").value);
+      }
+      
+      if (!isNaN(parseInt(document.getElementById("yss").value))){
+        yss = parseInt(document.getElementById("yss").value);
+      }
+      
+      if (!isNaN(parseInt(document.getElementById("rmm").value))){
+        rmm = parseInt(document.getElementById("rmm").value);
+      }
+      
+      if (!isNaN(parseInt(document.getElementById("rss").value))){
+        rss = parseInt(document.getElementById("rss").value);
+      }
+
+      console.log(ymm + "," + yss + "," + rmm + "," + rss);
+
+
+
+      yellowLimit = ymm*60 + yss;
+      redLimit = rmm*60 + rss;
+
+      colorTimerLimt.push(yellowLimit);
+      colorTimerLimt.push(redLimit);
+
+
+      var htmlContent = "<div style='text-align: center'><input type='text'  placeholder='name' class='inputName'></div>\
+        <div class='bigfonts colorDiv' id='colorDiv"+ gid +"'> \
+        <label id='mm" + gid +"'>0</label> : <label id='ss" + gid + "'>0</label> \
+        </div> \
+        <div style='text-align: center'><button id='btnid" + gid +"' class='button'>Stop</button></div><br><br>";
+
+        var timerContainerDiv = document.createElement('div');
+        timerContainerDiv.id = "timerdiv" + gid;
+        timerContainerDiv.innerHTML = htmlContent;
+        var parentdiv = document.getElementById("alltimers-container");
+        parentdiv.insertBefore(timerContainerDiv, parentdiv.firstChild);
+
+      var temp = gid;
+      var setIntervalObj = setInterval(function(){startTimer(temp)}, 1000);
+      document.getElementById('btnid' + temp).addEventListener("click", function(){endTimer(setIntervalObj)}, false);
+      //document.getElementById('btnid' + temp).onclick = alert("hiii");
+
+      gid++;
+    }
+    
+    function startTimer(id){
+      //alert(document.getElementById("timerdiv" + id).innerHTML);
+      
+      var mmlabel = document.getElementById("mm" + id);
+      var sslabel = document.getElementById("ss" + id);
+      var ssdata = sslabel.innerHTML;
+      var mmdata = mmlabel.innerHTML;
+
+      if (ssdata < 59){
+        ssdata++;
+      } else{
+        ssdata = 0;
+        mmdata++;
+      }
+
+      if (mmdata == 60){
+        mmdata = 0;
+      }
+      
+      mmlabel.innerText = mmdata;
+      sslabel.innerText = ssdata;
+
+      // background color change
+
+      var tempTimeLimit = mmdata*60 + ssdata;
+
+      if (tempTimeLimit > colorTimerLimt[id*2 + 1] ) {
+        if ((tempTimeLimit - colorTimerLimt[id*2 + 1] ) == 1){
+          document.getElementById("colorDiv" + id).style.backgroundColor = "red";
+        }
+      } else if (tempTimeLimit > colorTimerLimt[id*2]){
+        if ((tempTimeLimit - colorTimerLimt[id*2] ) == 1){
+          document.getElementById("colorDiv" + id).style.backgroundColor = "yellow";
+        }
+      }
+
+    }
+
+    function endTimer(setIntervalObj){
+      window.clearInterval(setIntervalObj);
+      //alert("hiiii");
+    }
+
+  </script>
+<body>
+
+<div id="div-main-container">
+  <div id="yellow-container">
+    <div style="float: left;"> 
+      <label style="background-color:rgb(235, 228, 21);">Yellow Timer</label>
+    </div>
+    <div class="floatleft-class">
+       <input type="text" id="ymm" placeholder="minutes">
+    </div>
+    <div>
+      <input type="text" id="yss" placeholder="seconds">
+    </div>
+  </div>
+  <br>
+ <div id="red-container">
+    <div class="floatleft-class">
+      <label style="background-color:rgba(233, 14, 14, 0.825);">Red Timer</label>
+    </div>
+    <div class="floatleft-class">
+      <input type="text" id="rmm" placeholder="minutes">
+    </div>
+    <div>
+      <input type="text" id="rss" placeholder="seconds">
+    </div>
+  </div>
+  <button id="btn-create" onclick="createTimer()" class='button'>Create</button>
+  <br> <br><br> <br>
+<div id="alltimers-container">
+<div></div>
+</div>
+
+</body>
+</html>
